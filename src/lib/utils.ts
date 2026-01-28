@@ -11,14 +11,24 @@ export const convertRecordToObject = (data: Record<string, string>[]): { [x: str
   }))
 }
 
-export const dataFilterPOI = (dataFix: { [x: string]: string; }[]): { [x: string]: string; }[] =>
-  dataFix.filter(item => item.Statistic.startsWith("POI"))
-    .map(item => ({
-      ...item,
-      Statistic: item.Statistic.replace("POI_", ""),
-    }))
+export const dataFilterPOI = <T extends Record<string, string>>(dataFix: T[]): T[] => {
+  return dataFix
+    .map(item => {
+      const [key] = Object.keys(item) as (keyof T)[];
 
-export const cleanUpPOIstr = (data: Record<string, string>[]): Record<string, string>[] => { return data.filter(item => !item.Statistic.startsWith('POI')) };
+      if (!item[key].startsWith("POI_")) return null;
+
+      return {
+        ...item,
+        [key]: item[key].replace("POI_", "").replace(/([A-Z])/g, ' $1').trim(),
+      };
+    })
+    .filter(Boolean) as T[];
+};
+
+export const spaceHelper = (str:string):string => str.replace(/([A-Z])/g, ' $1').trim()
+
+export const cleanUpPOIstr = (data: Record<string, string>[]): Record<string, string>[] => { return data.filter((item) => !Object.values(item)[0].startsWith('POI')) };
 export const randomColorsPie = [
   "#3f2a9b", "#ff6d3c", "#12e4f9", "#a1c23b",
   "#e34f8d", "#08b2d4", "#f7a12c", "#9c6ff5",
@@ -28,6 +38,6 @@ export const randomColorsPie = [
 ]
 
 export enum ChartType {
-    Pie = 'Pie',
-    Bar = 'Bar'
+  Pie = 'Pie',
+  Bar = 'Bar'
 }
