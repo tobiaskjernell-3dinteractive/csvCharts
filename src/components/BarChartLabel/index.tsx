@@ -2,8 +2,9 @@ import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "../ui/chart";
 import { cleanUpPOIstr, convertRecordToObject, dataFilterPOI } from "@/lib/utils";
+import SelectDropdown from "../SelectDropdown";
 
-export function ChartBarLabel({ data }: { data: Record<string, string>[] }) {
+export function BarChartLabel({ data }: { data: Record<string, string>[] }) {
     const dataFix = convertRecordToObject(data);
     const visualData = dataFilterPOI(dataFix)
     const dataOverflow = cleanUpPOIstr(data);
@@ -22,8 +23,9 @@ export function ChartBarLabel({ data }: { data: Record<string, string>[] }) {
     return (
         <Card>
             <CardContent>
-                {dataOverflow.map(item =>
-                    <div className="flex items-center justify-center gap-3">
+                <SelectDropdown />
+                {dataOverflow.map((item, index) =>
+                    <div key={index} className="flex items-center justify-center gap-3">
                         <CardTitle>{item.Statistic}:</CardTitle>
                         <p className="text-sm">{item.Value}</p>
                     </div>
@@ -81,4 +83,4 @@ export function ChartBarLabel({ data }: { data: Record<string, string>[] }) {
     )
 }
 
-export default ChartBarLabel;
+export default BarChartLabel;

@@ -1,12 +1,16 @@
 import { FilePlus } from "lucide-react";
 import React, { useState } from "react";
-import ChartBarLabel from "../BarChartLabel";
+import { PieChartLabel } from "../PieChartLabel";
+import BarChartLabel from "../BarChartLabel";
+import { ChartType } from "@/lib/utils";
+import { useChartStore } from "@/zustand/stores";
 
 function FileUploader() {
+    const currentChart = useChartStore((state) => state.chart);
     const [files, setFiles] = useState<File[]>([]);
     const [isDragging, setIsDragging] = useState(false);
 
-    const handleDragEnter = () => setIsDragging(true);
+    const handleDragEnter = () => setIsDragging(true);          
     const handleDragLeave = () => setIsDragging(false);
 
     const [csvArray, setCsvArray] = useState<Record<string, string>[]>([]);
@@ -52,7 +56,7 @@ function FileUploader() {
 
     return (
         <>
-            {files.length === 0 ?
+            {files.length === 0 &&
                 <div
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
@@ -62,7 +66,7 @@ function FileUploader() {
                     style={{
                         border: "2px dashed #cea86f",
                         padding: "50px",
-                        textAlign: "center",        
+                        textAlign: "center",
                         borderRadius: "10px",
                         backgroundColor: isDragging ? "#cea86f" : "",
                     }}
@@ -71,17 +75,15 @@ function FileUploader() {
                         <p className={`pointer-events-none text-[#cea86f] ${isDragging ? 'text-black' : 'text-[#cea86f]'}`}>Drag and drop CSV file here</p>
                         <FilePlus className="pointer-events-none" color="#cea86f" />
                     </div>
-                </div>  
-                :
-                <div className="flex">
-                    <div className="w-200 h-auto shadow-2xl shadow-black">
-                        <ChartBarLabel data={csvArray} />
-                    </div>
                 </div>
-    
             }
-            {/* '{csvArray.length > 0 && csvArray.map((item, index) => <div className="text-white" key={index}>{item.Statistic} {item.Value}</div>)} */}
-
+            {csvArray.length > 0 && <div className="flex">
+                <div className="w-200 h-auto shadow-2xl shadow-black">
+                    {currentChart === ChartType.Pie && <PieChartLabel data={csvArray} />}
+                    {currentChart === ChartType.Bar && <BarChartLabel data={csvArray} />}
+                </div>
+            </div>}
+    
         </>
 
     );
