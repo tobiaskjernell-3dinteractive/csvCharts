@@ -4,6 +4,7 @@ import { PieChartLabel } from "../PieChartLabel";
 import BarChartLabel from "../BarChartLabel";
 import { ChartType } from "@/lib/utils";
 import { useChartStore } from "@/zustand/stores";
+import ResetCSVbtn from "../ResetCSVbtn";
 
 function FileUploader() {
     const currentChart = useChartStore((state) => state.chart);
@@ -35,14 +36,15 @@ function FileUploader() {
         e.preventDefault();
         const droppedFiles: File[] = Array.from(e.dataTransfer.files);
         setFiles(droppedFiles);
-        submit(droppedFiles[0])
+        handleSubmit(droppedFiles[0])
+        setIsDragging(false);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
     };
 
-    const submit = (file: File) => {
+    const handleSubmit = (file: File) => {
         // const file = files[0]
         const reader = new FileReader();
 
@@ -52,6 +54,11 @@ function FileUploader() {
         }
 
         reader.readAsText(file);
+    }
+
+    const handleResetCSV = () => {
+        setCsvArray([]);
+        setFiles([])
     }
 
     return (
@@ -76,8 +83,11 @@ function FileUploader() {
                         <FilePlus className="pointer-events-none" color="#cea86f" />
                     </div>
                 </div>
-            }
+            }   
             {csvArray.length > 0 && <div className="flex">
+                <div className="absolute top-10 left-10 ">
+                    <ResetCSVbtn callback={handleResetCSV} />   
+                </div>
                 <div className="w-200 h-auto shadow-2xl shadow-black">
                     {currentChart === ChartType.Pie && <PieChartLabel data={csvArray} />}
                     {currentChart === ChartType.Bar && <BarChartLabel data={csvArray} />}
