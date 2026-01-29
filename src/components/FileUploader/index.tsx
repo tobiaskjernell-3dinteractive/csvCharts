@@ -85,19 +85,19 @@ function FileUploader() {
                     </div>
                 </div>
             }   
-            {csvArray.length > 0 && <div className="flex">
-                <div className="absolute top-10 left-10">
-                    <ResetCSVbtn callback={handleResetCSV} />   
+            {csvArray.length > 0 && <div className="flex flex-col"> 
+                <div className="2xl:absolute flex mb-2 top-10 left-10">
+                    <ResetCSVbtn callback={handleResetCSV   } />   
                 </div>
-                <div className="w-300 h-auto shadow-2xl shadow-black">
+                <div className="w-[calc(100vw-50px)] xl:w-300 h-full shadow-2xl shadow-black">
                     {currentChart === ChartType.Pie && <PieChartLabel data={csvArray} />}
                     {currentChart === ChartType.Bar && <BarChartLabel data={csvArray} />}
                 </div>
             </div>}
     
-        </>
+        </> 
 
-    );
+    );  
 }
 
 

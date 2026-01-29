@@ -20,11 +20,8 @@ export function BarChartLabel({ data }: { data: Record<string, string | number>[
         },
     } satisfies ChartConfig
 
-    console.log(dataFix)
-    console.log(visualData)
-
     return (
-        <Card className="min-h-[200px] w-full">
+        <Card className="h-full w-full">
             <CardContent>
                 <SelectDropdown />
                 {dataOverflow.map((item, index) =>

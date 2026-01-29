@@ -61,9 +61,9 @@ export function PieChartLabel({ data }: { data: Record<string, string | number>[
             <ChartTooltip content={<ChartTooltipContent hideLabel nameKey={Object.keys(data[0])[0]} />} />
             <ChartLegend
               content={<ChartLegendContent nameKey={Object.keys(data[0])[0]} />}
-              className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+              className="-translate-y-2 grid grid-cols-4 grid-rows-2 gap-1"
             />
-          </PieChart>
+          </PieChart> 
         </ChartContainer>
       </CardContent>
     </Card>
