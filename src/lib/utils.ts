@@ -5,30 +5,35 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const convertRecordToObject = (data: Record<string, string>[]): { [x: string]: string }[] => {
+export const convertRecordToObject = (data: Record<string, string | number>[]): { [x: string]: string | number }[] => {
   return Object.values(data).map((value) => ({
-    ...value
+    ...value,
   }))
 }
 
-export const dataFilterPOI = <T extends Record<string, string>>(dataFix: T[]): T[] => {
+export const dataFilterPOI = <T extends Record<string, string | number>>(dataFix: T[]): T[] => {
   return dataFix
     .map(item => {
       const [key] = Object.keys(item) as (keyof T)[];
-
-      if (!item[key].startsWith("POI_")) return null;
+      console.log(key);
+      if (typeof (item[key]) === 'string')
+        if (!item[key].startsWith("POI_")) return null;
 
       return {
         ...item,
-        [key]: item[key].replace("POI_", "").replace(/([A-Z])/g, ' $1').trim(),
+        [key]: String(item[key]).replace("POI_", "").replace(/([A-Z])/g, ' $1').trim(),
       };
     })
     .filter(Boolean) as T[];
 };
 
-export const spaceHelper = (str:string):string => str.replace(/([A-Z])/g, ' $1').trim()
+export const spaceHelper = (str: string): string => str.replace(/([A-Z])/g, ' $1').trim()
 
-export const cleanUpPOIstr = (data: Record<string, string>[]): Record<string, string>[] => { return data.filter((item) => !Object.values(item)[0].startsWith('POI')) };
+export const cleanUpPOIstr = (data: Record<string, string | number>[]): Record<string, string | number>[] => {
+  return data.filter(
+    (item) => !String(Object.values(item)[0]).startsWith('POI') && Object.values(item)[0] !== '')
+};
+
 export const randomColorsPie = [
   "#3f2a9b", "#ff6d3c", "#12e4f9", "#a1c23b",
   "#e34f8d", "#08b2d4", "#f7a12c", "#9c6ff5",

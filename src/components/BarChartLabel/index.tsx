@@ -4,7 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } f
 import { cleanUpPOIstr, convertRecordToObject, dataFilterPOI, spaceHelper } from "@/lib/utils";
 import SelectDropdown from "../SelectDropdown";
 
-export function BarChartLabel({ data }: { data: Record<string, string>[] }) {
+export function BarChartLabel({ data }: { data: Record<string, string | number>[] }) {
     const dataFix = convertRecordToObject(data);
     const visualData = dataFilterPOI(dataFix)
     const dataOverflow = cleanUpPOIstr(data);
@@ -20,13 +20,16 @@ export function BarChartLabel({ data }: { data: Record<string, string>[] }) {
         },
     } satisfies ChartConfig
 
+    console.log(dataFix)
+    console.log(visualData)
+
     return (
-        <Card>
+        <Card className="min-h-[200px] w-full">
             <CardContent>
                 <SelectDropdown />
                 {dataOverflow.map((item, index) =>
                     <div key={index} className="flex items-center justify-center gap-3">
-                        <CardTitle>{spaceHelper(Object.values(item)[0])}:</CardTitle>
+                        <CardTitle>{spaceHelper(String(Object.values(item)[0]))}:</CardTitle>
                         <p className="text-sm">{Object.values(item)[1]}</p>
                     </div>
                 )}
@@ -36,7 +39,7 @@ export function BarChartLabel({ data }: { data: Record<string, string>[] }) {
                 <CardDescription>Info from CSV</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
+                <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
                     <BarChart
                         accessibilityLayer
                         data={visualData}
@@ -48,33 +51,36 @@ export function BarChartLabel({ data }: { data: Record<string, string>[] }) {
                         <XAxis
                             label={{
                                 value: (Object.keys(visualData[0])[0]),
-                                position: 'insideRight',
-                                offset:'0',
+                                position: 'insideBottom',
+                                offset: '5',
+                                fontWeight: 'bold'
                             }}
                             dataKey={(Object.keys(visualData[0])[0])}
-                            tickLine={false}    
-                            tickMargin={10}
+                            tickLine={true}
+                            tickMargin={0}
                             axisLine={true}
                             tickFormatter={(value) => value.slice(0, 20)}
                         />
                         <ChartTooltip
                             content={
                                 <ChartTooltipContent
-                                nameKey={Object.values(visualData[0])[0]}
-                                />  
+                                    nameKey={String(Object.values(visualData[0])[0])}
+                                />
                             }
                             cursor={false}
-                           
+
                         />
                         <YAxis
                             label={{
                                 value: (Object.keys(visualData[0])[1]),
                                 position: 'top',
-                                offset: '10'
+                                offset: '10',   
+                                fontWeight: 'bold'
                             }}
+                            domain={[0, (overFlow: number) => Math.ceil(overFlow * 1.05)]}
                             dataKey={(Object.keys(visualData[0])[1])}
                             tickLine={false}
-                            tickMargin={10} 
+                            tickMargin={10}
                             axisLine={true}
 
                         />

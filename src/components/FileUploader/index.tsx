@@ -1,9 +1,9 @@
-import { FilePlus } from "lucide-react";
-import React, { useState } from "react";
-import { PieChartLabel } from "../PieChartLabel";
-import BarChartLabel from "../BarChartLabel";
 import { ChartType } from "@/lib/utils";
 import { useChartStore } from "@/zustand/stores";
+import { FilePlus } from "lucide-react";
+import React, { useState } from "react";
+import BarChartLabel from "../BarChartLabel";
+import { PieChartLabel } from "../PieChartLabel";
 import ResetCSVbtn from "../ResetCSVbtn";
 
 function FileUploader() {
@@ -14,19 +14,20 @@ function FileUploader() {
     const handleDragEnter = () => setIsDragging(true);          
     const handleDragLeave = () => setIsDragging(false);
 
-    const [csvArray, setCsvArray] = useState<Record<string, string>[]>([]);
+    const [csvArray, setCsvArray] = useState<Record<string, string | number>[]>([]);
 
     const processCSV = (str: string, delim: string = ',') => {
         const headers = str.slice(0, str.indexOf('\n')).trim().split(delim);
         const rows = str.slice(str.indexOf('\n') + 1).trim().split('\n');
 
         const newArray = rows.map(row => {
-            const values = row.split(delim);
-            const eachObject = headers.reduce<Record<string, string>>((obj, header, i) => {
-                obj[header] = values[i];
+            const values = row.split(delim  );
+            console.log(typeof(values[1]));
+            const eachObject = headers.reduce<Record<string, string | number>>((obj, header, i) => {
+                obj[header] =  i == 1 ? Number(values[i]) : values[i]
                 return obj;
             }, {})
-            return eachObject;
+            return eachObject;  
         })
 
         setCsvArray(newArray)
@@ -85,10 +86,10 @@ function FileUploader() {
                 </div>
             }   
             {csvArray.length > 0 && <div className="flex">
-                <div className="absolute top-10 left-10 ">
+                <div className="absolute top-10 left-10">
                     <ResetCSVbtn callback={handleResetCSV} />   
                 </div>
-                <div className="w-200 h-auto shadow-2xl shadow-black">
+                <div className="w-300 h-auto shadow-2xl shadow-black">
                     {currentChart === ChartType.Pie && <PieChartLabel data={csvArray} />}
                     {currentChart === ChartType.Bar && <BarChartLabel data={csvArray} />}
                 </div>

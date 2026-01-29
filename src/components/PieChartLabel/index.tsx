@@ -20,8 +20,8 @@ import SelectDropdown from "../SelectDropdown"
 
 export const description = "A pie chart with a legend"
 
-export function PieChartLabel({ data }: { data: Record<string, string>[] }) {
-  const dataFix = convertRecordToObject(data);
+export function PieChartLabel({ data }: { data: Record<string, string | number>[] }) {
+  const dataFix = convertRecordToObject(data);  
   const visualData = dataFilterPOI(dataFix)
   const dataOverflow = cleanUpPOIstr(data);
   const visualDataWithColor = visualData.map((item, index) => ({
@@ -41,12 +41,12 @@ export function PieChartLabel({ data }: { data: Record<string, string>[] }) {
 
   return (
     <Card className="flex flex-col">
-      <div className="ml-8  ">
+      <div className="ml-8">
         <SelectDropdown />
       </div>
       <CardHeader className="items-center pb-0">
         {dataOverflow.map((item, index) => <div key={index} className="flex gap-1 justify-center">
-          <CardTitle>{spaceHelper(Object.values(item)[0])}:</CardTitle>
+          <CardTitle>{spaceHelper(String(Object.values(item)[0]))}:</CardTitle>
           <CardDescription>{Object.values(item)[1]}</CardDescription>
         </div>)}
 
@@ -54,7 +54,7 @@ export function PieChartLabel({ data }: { data: Record<string, string>[] }) {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={setUpConfig}
-          className="mx-auto aspect-square max-h-125"
+          className="mx-auto aspect-square max-h-150"
         >
           <PieChart>
             <Pie animationBegin={0} animationDuration={1000} data={visualDataWithColor} dataKey={Object.keys(data[0])[1]} label />
